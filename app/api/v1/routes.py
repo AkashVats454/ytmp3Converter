@@ -1,3 +1,4 @@
+import os
 from pathlib import Path
 
 from fastapi import APIRouter, HTTPException
@@ -19,9 +20,19 @@ def convert_to_mp3(payload: ConvertRequest) -> ConvertResponse:
         converter = YouTubeConverter(output_dir=file_cleanup.DOWNLOADS_DIR)
         file_path = converter.download_audio(payload.url)
     except DownloadError as exc:
+        cookie_help = ""
+        if not os.environ.get("YTDLP_COOKIES_FILE"):
+            cookie_help = (
+                " Set the environment variable YTDLP_COOKIES_FILE to a cookies.txt file exported from a browser "
+                "if the video requires authentication or age verification."
+            )
+
         raise HTTPException(
             status_code=400,
-            detail=f"Unable to convert this YouTube URL. The video may be unavailable, age-restricted, or blocked for audio extraction. Details: {exc}",
+            detail=(
+                f"Unable to convert this YouTube URL. The video may be unavailable, age-restricted, or blocked for audio extraction. "
+                f"Details: {exc}.{cookie_help}"
+            ),
         ) from exc
 
     file_name = Path(file_path).name
