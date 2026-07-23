@@ -1,0 +1,156 @@
+:root {
+  font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  color: #f5f7fb;
+  background: linear-gradient(135deg, #111827, #0f172a);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+}
+
+.app-shell {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+}
+
+.card {
+  width: min(680px, 100%);
+  background: rgba(15, 23, 42, 0.88);
+  border: 1px solid rgba(148, 163, 184, 0.25);
+  border-radius: 18px;
+  padding: 24px;
+  box-shadow: 0 18px 45px rgba(0, 0, 0, 0.25);
+}
+
+.brand-row {
+  margin-bottom: 20px;
+}
+
+.title {
+  margin: 12px 0 8px;
+  font-size: 2rem;
+}
+
+.info-panel,
+.steps-panel {
+  background: rgba(30, 41, 59, 0.75);
+  border: 1px solid rgba(148, 163, 184, 0.25);
+  border-radius: 14px;
+  padding: 16px;
+  margin-bottom: 18px;
+}
+
+.info-panel h2,
+.steps-panel h3 {
+  margin-top: 0;
+}
+
+.info-panel p,
+.steps-panel li {
+  color: #dbeafe;
+}
+
+.brand-badge {
+  display: inline-flex;
+  padding: 6px 12px;
+  border-radius: 999px;
+  background: #2563eb;
+  font-weight: 700;
+}
+
+.subtitle {
+  margin-top: 12px;
+  color: #cbd5e1;
+}
+
+.convert-form {
+  display: grid;
+  gap: 12px;
+}
+
+input,
+select {
+  width: 100%;
+  border-radius: 10px;
+  border: 1px solid #475569;
+  padding: 12px 14px;
+  background: #0f172a;
+  color: #e2e8f0;
+}
+
+button,
+.download-link {
+  border: none;
+  border-radius: 10px;
+  padding: 12px 16px;
+  cursor: pointer;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+button {
+  background: #2563eb;
+  color: white;
+}
+
+button:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.download-link {
+  background: #16a34a;
+  color: white;
+}
+
+.ghost-button {
+  background: #475569;
+}
+
+.message {
+  margin-top: 16px;
+  padding: 12px 14px;
+  border-radius: 10px;
+}
+
+.message.error {
+  background: rgba(127, 29, 29, 0.5);
+  border: 1px solid rgba(239, 68, 68, 0.6);
+}
+
+.result-box {
+  margin-top: 20px;
+  padding: 16px;
+  background: rgba(30, 41, 59, 0.75);
+  border-radius: 12px;
+}
+
+.result-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+
+.countdown-box {
+  margin-bottom: 14px;
+  padding: 10px 12px;
+  border-radius: 10px;
+  background: rgba(59, 130, 246, 0.16);
+  border: 1px solid rgba(96, 165, 250, 0.45);
+  color: #bfdbfe;
+  font-weight: 700;
+}
+
+.result-actions {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}

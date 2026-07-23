@@ -13,6 +13,8 @@ router = APIRouter(prefix="/api/v1")
 
 @router.post("/convert", response_model=ConvertResponse)
 def convert_to_mp3(payload: ConvertRequest) -> ConvertResponse:
+    retention_minutes = payload.retention_minutes or 6
+
     try:
         converter = YouTubeConverter(output_dir=file_cleanup.DOWNLOADS_DIR)
         file_path = converter.download_audio(payload.url)
@@ -23,12 +25,16 @@ def convert_to_mp3(payload: ConvertRequest) -> ConvertResponse:
         ) from exc
 
     file_name = Path(file_path).name
+    file_path_obj = Path(file_path)
+    file_cleanup.write_retention_metadata(file_path_obj, retention_minutes)
 
     return ConvertResponse(
         status="success",
         file_name=file_name,
         download_url=f"/api/v1/download/{file_name}",
-        message="MP3 ready for download",
+        message=f"MP3 ready for download. This file will auto-delete in {retention_minutes} minute(s) if you do not confirm the download.",
+        retention_minutes=retention_minutes,
+        auto_delete_after_minutes=retention_minutes,
     )
 
 
@@ -77,4 +83,5 @@ def delete_file(file_name: str) -> DeleteResponse:
     if not file_path.exists():
         raise HTTPException(status_code=404, detail="File not found")
     file_path.unlink(missing_ok=True)
+    file_cleanup._metadata_path_for(file_path).unlink(missing_ok=True)
     return DeleteResponse(status="deleted", message=f"{file_path.name} removed successfully")

@@ -38,6 +38,27 @@ def test_convert_endpoint_returns_download_metadata(tmp_path, monkeypatch):
     assert payload["file_name"] == "sample.mp3"
 
 
+def test_convert_endpoint_returns_selected_retention_minutes(tmp_path, monkeypatch):
+    file_path = tmp_path / "sample.mp3"
+    file_path.write_text("audio")
+
+    def fake_download(url: str, output_dir: str) -> str:
+        return str(file_path)
+
+    monkeypatch.setattr(YouTubeConverter, "download_audio", fake_download)
+    monkeypatch.setattr("app.services.file_cleanup.DOWNLOADS_DIR", str(tmp_path))
+
+    response = client.post(
+        "/api/v1/convert",
+        json={"url": "https://www.youtube.com/watch?v=dQw4w9WgXcQ", "retention_minutes": 2},
+    )
+
+    assert response.status_code == 200
+    payload = response.json()
+    assert payload["retention_minutes"] == 2
+    assert payload["auto_delete_after_minutes"] == 2
+
+
 def test_cleanup_expired_files_deletes_old_file(tmp_path):
     old_file = tmp_path / "old.mp3"
     old_file.write_text("audio")
