@@ -1,0 +1,5 @@
+fastapi
+uvicorn
+pydantic
+pytest
+yt-dlp>=2026.7.4
