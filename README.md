@@ -29,6 +29,32 @@ A FastAPI backend that accepts a YouTube URL, converts the audio to MP3, returns
    uvicorn app.main:app --reload
    ```
 
+## YouTube authentication / age-restricted videos
+
+If a video requires authentication, age verification, or bot protection, set the `YTDLP_COOKIES_FILE` environment variable to the path of a browser-exported `cookies.txt` file before starting the service. Example:
+
+```bash
+export YTDLP_COOKIES_FILE=/tmp/cookies.txt
+```
+
+On Windows PowerShell:
+
+```powershell
+$env:YTDLP_COOKIES_FILE = 'C:\path\to\cookies.txt'
+```
+
+If you want Render to create the file at startup, store the cookie contents in a secret environment variable named `YTDLP_COOKIES_CONTENT` and point `YTDLP_COOKIES_FILE` at the desired path. Example:
+
+```bash
+export YTDLP_COOKIES_FILE=/tmp/cookies.txt
+export YTDLP_COOKIES_CONTENT="$(cat /path/to/cookies.txt)"
+```
+
+On Render, store the raw cookie file contents in a secret environment variable and set:
+
+- `YTDLP_COOKIES_FILE=/tmp/cookies.txt`
+- `YTDLP_COOKIES_CONTENT=<your cookies.txt content>`
+
 ## Frontend consumption
 
 1. Call `POST /api/v1/convert` with:
