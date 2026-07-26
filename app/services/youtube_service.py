@@ -1,3 +1,4 @@
+import os
 from pathlib import Path
 
 import yt_dlp
@@ -27,6 +28,10 @@ class YouTubeConverter:
 
         if client_name and client_name != "default":
             options["extractor_args"] = {"youtube": {"player_client": [client_name]}}
+
+        cookie_file = os.environ.get("YTDLP_COOKIES_FILE")
+        if cookie_file:
+            options["cookiefile"] = cookie_file
 
         return options
 
