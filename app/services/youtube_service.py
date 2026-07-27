@@ -11,7 +11,6 @@ class YouTubeConverter:
 
     def _build_ydl_options(self, client_name: str | None = None) -> dict:
         options = {
-            "format": "bestaudio/best",
             "outtmpl": str(self.output_dir / "%(id)s.%(ext)s"),
             "postprocessors": [
                 {
@@ -20,6 +19,7 @@ class YouTubeConverter:
                     "preferredquality": "0",
                 }
             ],
+            "merge_output_format": "mp3",
             "quiet": True,
             "noplaylist": True,
             "extract_flat": False,
@@ -40,9 +40,11 @@ class YouTubeConverter:
         destination.mkdir(parents=True, exist_ok=True)
 
         client_attempts = [
-            ("default", {}),
-            ("android", {"extractor_args": {"youtube": {"player_client": ["android"]}}}),
-            ("tv_embedded", {"extractor_args": {"youtube": {"player_client": ["tv_embedded"]}}}),
+            ("default", {"format": "bestaudio[ext=m4a]/bestaudio/best"}),
+            ("default", {"format": "bestaudio/best"}),
+            ("default", {"format": "bestvideo+bestaudio/best"}),
+            ("android", {"format": "bestaudio[ext=m4a]/bestaudio/best", "extractor_args": {"youtube": {"player_client": ["android"]}}}),
+            ("tv_embedded", {"format": "bestaudio[ext=m4a]/bestaudio/best", "extractor_args": {"youtube": {"player_client": ["tv_embedded"]}}}),
         ]
 
         last_error = None
