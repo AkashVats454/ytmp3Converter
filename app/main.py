@@ -1,3 +1,4 @@
+import base64
 import os
 from pathlib import Path
 
@@ -13,9 +14,19 @@ COOKIE_FILE_PATH = Path(os.environ.get("YTDLP_COOKIES_FILE", "/tmp/cookies.txt")
 
 
 def _write_cookies_file_from_env() -> None:
-    cookies_content = os.environ.get("YTDLP_COOKIES_CONTENT")
-    if not cookies_content:
+    raw_content = os.environ.get("YTDLP_COOKIES_CONTENT")
+    b64_content = os.environ.get("YTDLP_COOKIES_CONTENT_BASE64")
+
+    if not raw_content and not b64_content:
         return
+
+    if b64_content:
+        try:
+            cookies_content = base64.b64decode(b64_content, validate=True).decode("utf-8")
+        except (ValueError, UnicodeDecodeError):
+            cookies_content = b64_content
+    else:
+        cookies_content = raw_content
 
     COOKIE_FILE_PATH.parent.mkdir(parents=True, exist_ok=True)
     COOKIE_FILE_PATH.write_text(cookies_content)
