@@ -1,4 +1,6 @@
 import os
+import shutil
+import tempfile
 from pathlib import Path
 
 import yt_dlp
@@ -8,6 +10,24 @@ class YouTubeConverter:
     def __init__(self, output_dir: str = "downloads") -> None:
         self.output_dir = Path(output_dir)
         self.output_dir.mkdir(parents=True, exist_ok=True)
+        self._cookiefile = self._prepare_cookiefile()
+
+    def _prepare_cookiefile(self) -> str | None:
+        cookie_file = os.environ.get("YTDLP_COOKIES_FILE", "/etc/secrets/cookies.txt")
+        if not cookie_file:
+            return None
+
+        cookie_path = Path(cookie_file)
+        if not cookie_path.exists():
+            return None
+
+        if os.access(cookie_file, os.W_OK):
+            return cookie_file
+
+        temp_cookie = tempfile.NamedTemporaryFile(delete=False, suffix=".txt")
+        temp_cookie.close()
+        shutil.copy2(cookie_file, temp_cookie.name)
+        return temp_cookie.name
 
     def _build_ydl_options(self, client_name: str | None = None) -> dict:
         options = {
@@ -29,9 +49,8 @@ class YouTubeConverter:
         if client_name and client_name != "default":
             options["extractor_args"] = {"youtube": {"player_client": [client_name]}}
 
-        cookie_file = os.environ.get("YTDLP_COOKIES_FILE", "/etc/secrets/cookies.txt")
-        if cookie_file and Path(cookie_file).exists():
-            options["cookiefile"] = cookie_file
+        if self._cookiefile:
+            options["cookiefile"] = self._cookiefile
 
         return options
 
