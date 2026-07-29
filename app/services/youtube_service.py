@@ -29,8 +29,8 @@ class YouTubeConverter:
         if client_name and client_name != "default":
             options["extractor_args"] = {"youtube": {"player_client": [client_name]}}
 
-        cookie_file = os.environ.get("YTDLP_COOKIES_FILE")
-        if cookie_file:
+        cookie_file = os.environ.get("YTDLP_COOKIES_FILE", "/etc/secrets/cookies.txt")
+        if cookie_file and Path(cookie_file).exists():
             options["cookiefile"] = cookie_file
 
         return options
