@@ -44,6 +44,7 @@ class YouTubeConverter:
             "noplaylist": True,
             "extract_flat": False,
             "no_warnings": False,
+            "js_runtimes": {"deno": {}},
         }
 
         if client_name and client_name != "default":
@@ -62,9 +63,13 @@ class YouTubeConverter:
             ("default", {"format": "bestaudio[ext=m4a]/bestaudio/best"}),
             ("default", {"format": "bestaudio/best"}),
             ("default", {"format": "bestvideo+bestaudio/best"}),
-            ("android", {"format": "bestaudio[ext=m4a]/bestaudio/best", "extractor_args": {"youtube": {"player_client": ["android"]}}}),
-            ("tv_embedded", {"format": "bestaudio[ext=m4a]/bestaudio/best", "extractor_args": {"youtube": {"player_client": ["tv_embedded"]}}}),
         ]
+
+        if not self._cookiefile:
+            client_attempts.extend([
+                ("android", {"format": "bestaudio[ext=m4a]/bestaudio/best", "extractor_args": {"youtube": {"player_client": ["android"]}}}),
+                ("tv_embedded", {"format": "bestaudio[ext=m4a]/bestaudio/best", "extractor_args": {"youtube": {"player_client": ["tv_embedded"]}}}),
+            ])
 
         last_error = None
 
