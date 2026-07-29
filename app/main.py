@@ -1,3 +1,4 @@
+import subprocess  #TODO: temporary code to remove
 from fastapi import FastAPI
 
 from app.api.v1.routes import router as v1_router
@@ -9,4 +10,8 @@ app.include_router(v1_router)
 
 @app.on_event("startup")
 def startup_event() -> None:
+    try:
+        print(subprocess.check_output(["deno", "--version"]).decode())
+    except Exception as e:
+        print(f"DENO not installed: {e}")
     start_cleanup_loop()
